@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="sitepulse.php_spec_extension.php_spec_factory.class">Sitepulse\Behat\PhpSpecExtension\Context\PhpSpecFactory</parameter>
+        <parameter key="sitepulse.php_spec_extension.context.initializer.class">Sitepulse\Behat\PhpSpecExtension\Context\Initializer\PhpSpecAwareInitializer</parameter>
+    </parameters>
+
+    <services>
+        <service id="sitepulse.php_spec_extension.php_spec_factory" class="%sensio_labs.page_object_extension.page_factory.class%" public="false">
+
+        </service>
+
+        <service id="sitepulse.php_spec_extension.context.initializer" class="%sitepulse.php_spec_extension.context.initializer.class%">
+            <argument type="service" id="sitepulse.php_spec_extension.php_spec_factory" />
+            <tag name="behat.context.initializer" />
+        </service>
+
+    </services>
+</container>
