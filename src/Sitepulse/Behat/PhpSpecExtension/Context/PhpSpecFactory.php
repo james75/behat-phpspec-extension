@@ -30,6 +30,10 @@ class PhpSpecFactory implements PhpSpecFactoryInterface
     protected $expectationFactory;
     protected $caller;
     protected $wrappedObject;
+    protected $presenter;
+    protected $eventDispatcher;
+    protected $exampleNode;
+    protected $matchers;
 
     /**
      * @var array
@@ -39,26 +43,29 @@ class PhpSpecFactory implements PhpSpecFactoryInterface
     public function __construct(array $config = array())
     {
         $this->config = array('presenter' => 'StringPresenter');
+        $this->setup();
     }
 
-    private function setup($sus)
+    private function setup()
     {
-        $presenter = $this->getPresenter();
-        $eventDispatcher = new EventDispatcher();
-        $matchers = $this->getMatcherManager($presenter);
-        $exampleNode = new ExampleNode('expect', new \ReflectionFunction(__FUNCTION__));
-        $this->exceptionFactory = new ExceptionFactory($presenter);
-        $this->wrapper = new Wrapper($matchers, $presenter, $eventDispatcher, $exampleNode);
-        $this->wrappedObject = new WrappedObject($sus, $presenter);
-        $this->caller = new Caller($this->wrappedObject, $exampleNode, $eventDispatcher, $this->exceptionFactory, $this->wrapper);
-        $this->arrayAccess = new SubjectWithArrayAccess($this->caller, $presenter, $eventDispatcher);
-        $this->expectationFactory = new ExpectationFactory($exampleNode, $eventDispatcher, $matchers);
+        $this->presenter = $this->getPresenter();
+        $this->matchers = $this->getMatcherManager($this->presenter);
+        $reflectionMethod = new \ReflectionMethod(__CLASS__, 'getSubject');
+        $this->exampleNode = new ExampleNode('expect', $reflectionMethod);
     }
 
 
     public function getSubject($subject)
     {
-        return new Subject($subject, $this->wrapper, $this->wrappedObject, $this->caller, $this->arrayAccess, $this->expectationFactory);
+        $eventDispatcher = new EventDispatcher();
+        $exceptionFactory = new ExceptionFactory($this->presenter);
+        $wrapper = new Wrapper($this->matchers, $this->presenter, $eventDispatcher, $this->exampleNode);
+        $wrappedObject = new WrappedObject($subject, $this->presenter);
+        $caller = new Caller($wrappedObject, $this->exampleNode, $eventDispatcher, $exceptionFactory, $wrapper);
+        $arrayAccess = new SubjectWithArrayAccess($caller, $this->presenter, $eventDispatcher);
+        $expectationFactory = new ExpectationFactory($this->exampleNode, $eventDispatcher, $this->matchers);
+
+        return new Subject($subject, $wrapper, $wrappedObject, $caller, $arrayAccess, $expectationFactory);
     }
 
 
@@ -77,9 +84,8 @@ class PhpSpecFactory implements PhpSpecFactoryInterface
             $presenter = new $presenterClass($differ);
         }
 
-        $presenterClass = $presenter;
-        if(class_exists($presenterClass)){
-            $presenter = new $presenterClass($differ);
+        if(!$presenter instanceof PresenterInterface && class_exists($presenter)){
+            $presenter = new $presenter($differ);
         }
 
         if(!$presenter instanceof PresenterInterface){
@@ -100,16 +106,13 @@ class PhpSpecFactory implements PhpSpecFactoryInterface
             'PhpSpec\Matcher\ArrayContainMatcher',
             'PhpSpec\Matcher\ArrayCountMatcher',
             'PhpSpec\Matcher\ArrayKeyMatcher',
-            'PhpSpec\Matcher\CallbackMatcher',
             'PhpSpec\Matcher\ComparisonMatcher',
             'PhpSpec\Matcher\IdentityMatcher',
-            'PhpSpec\Matcher\MatcherInterface',
             'PhpSpec\Matcher\ObjectStateMatcher',
             'PhpSpec\Matcher\ScalarMatcher',
             'PhpSpec\Matcher\StringEndMatcher',
             'PhpSpec\Matcher\StringRegexMatcher',
             'PhpSpec\Matcher\StringStartMatcher',
-            'PhpSpec\Matcher\ThrowMatcher',
             'PhpSpec\Matcher\TypeMatcher',
         );
 
