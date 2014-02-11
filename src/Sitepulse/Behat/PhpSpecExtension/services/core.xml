@@ -6,10 +6,11 @@
     <parameters>
         <parameter key="sitepulse.php_spec_extension.php_spec_factory.class">Sitepulse\Behat\PhpSpecExtension\Context\PhpSpecFactory</parameter>
         <parameter key="sitepulse.php_spec_extension.context.initializer.class">Sitepulse\Behat\PhpSpecExtension\Context\Initializer\PhpSpecAwareInitializer</parameter>
+        <parameter key="sitepulse.php_spec_extension.php_spec_factory.class">Sitepulse\Behat\PhpSpecExtension\Context\PhpSpecFactory</parameter>
     </parameters>
 
     <services>
-        <service id="sitepulse.php_spec_extension.php_spec_factory" class="%sensio_labs.page_object_extension.page_factory.class%" public="false">
+        <service id="sitepulse.php_spec_extension.php_spec_factory" class="%sitepulse.php_spec_extension.php_spec_factory.class%" public="false">
 
         </service>
 
