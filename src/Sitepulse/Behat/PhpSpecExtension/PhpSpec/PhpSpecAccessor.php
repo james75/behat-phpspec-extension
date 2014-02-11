@@ -32,5 +32,4 @@ trait PhpSpecAccessor {
     {
         return $this->phpSpecFactory->getSubject($subject);
     }
-
 } 

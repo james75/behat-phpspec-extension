@@ -17,8 +17,8 @@ use PhpSpec\Wrapper\Subject\Caller;
 use PhpSpec\Wrapper\Subject\ExpectationFactory;
 use PhpSpec\Wrapper\Subject\SubjectWithArrayAccess;
 use PhpSpec\Wrapper\Subject\WrappedObject;
-use PhpSpec\Wrapper\Subject;
-use PhpSpec\Wrapper\Wrapper;
+use Sitepulse\Behat\PhpSpecExtension\PhpSpec\Subject;
+use Sitepulse\Behat\PhpSpecExtension\PhpSpec\Wrapper;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -125,6 +125,5 @@ class PhpSpecFactory implements PhpSpecFactoryInterface
 
         return $matcherManger;
     }
-
 }
  
