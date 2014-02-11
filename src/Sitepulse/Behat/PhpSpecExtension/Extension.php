@@ -49,7 +49,7 @@ class Extension implements ExtensionInterface
      */
     public function getCompilerPasses()
     {
-        // TODO: Implement getCompilerPasses() method.
+        return array();
     }
 }
  
